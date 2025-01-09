@@ -498,6 +498,23 @@
 		to_chat(heart_owner, span_bigboldinfo("You feel warmth returning to you once more."))
 		shadow_conversion = 0
 
+/obj/item/organ/eyes/shadow
+	name = "burning red eyes"
+	desc = "Even without their shadowy owner, looking at these eyes gives you a sense of dread."
+	icon = 'icons/obj/medical/organs/shadow_organs.dmi'
+	iris_overlays = FALSE
+	color_cutoffs = list(20, 10, 40)
+	pepperspray_protect = TRUE
+	flash_protect = FLASH_PROTECTION_SENSITIVE
+
+/// the key to some of their powers
+/obj/item/organ/brain/shadow
+	name = "shadowling tumor"
+	desc = "Something that was once a brain, before being remolded by a shadowling. It has adapted to the dark, irreversibly."
+	icon = 'icons/obj/medical/organs/shadow_organs.dmi'
+	/// What status effect do we gain while in darkness?
+	var/applied_status = /datum/status_effect/shadow_regeneration
+
 /obj/item/organ/heart/shadow_ritual/third/on_remove(mob/living/carbon/heart_owner)
 	..()
 	respawn_progress = 0
