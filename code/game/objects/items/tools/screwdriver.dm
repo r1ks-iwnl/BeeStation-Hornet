@@ -64,7 +64,7 @@
 /obj/item/screwdriver/attack(mob/living/carbon/M, mob/living/carbon/user)
 	if(!istype(M))
 		return ..()
-	if(!user.is_zone_selected(BODY_ZONE_PRECISE_EYES, precise_only = TRUE) && !user.is_zone_selected(BODY_ZONE_HEAD, simplified_probability = 40))
+	if(M.is_eyes_covered() && !user.is_zone_selected(BODY_ZONE_PRECISE_EYES, precise_only = TRUE) && !user.is_zone_selected(BODY_ZONE_HEAD, simplified_probability = 40))
 		return ..()
 	if(HAS_TRAIT(user, TRAIT_PACIFISM))
 		to_chat(user, span_warning("You don't want to harm [M]!"))

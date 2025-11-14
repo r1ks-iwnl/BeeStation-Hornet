@@ -57,7 +57,7 @@
 		icon_state = "fork"
 		forkload = null
 
-	else if(user.is_zone_selected(BODY_ZONE_PRECISE_EYES, simplified_probability = 30))
+	else if(!M.is_eyes_covered() && user.is_zone_selected(BODY_ZONE_PRECISE_EYES, simplified_probability = 30))
 		if(HAS_TRAIT(user, TRAIT_CLUMSY) && prob(50))
 			M = user
 		return eyestab(M,user)
