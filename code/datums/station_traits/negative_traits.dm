@@ -107,20 +107,6 @@
 		hat = new hat(spawned_mob)
 		spawned_mob.equip_to_slot(hat, ITEM_SLOT_HEAD)
 
-/datum/station_trait/blackout
-	name = "Blackout"
-	trait_type = STATION_TRAIT_NEGATIVE
-	weight = 5
-	show_in_report = TRUE
-	report_message = "Station lights seem to be damaged, be safe when starting your shift today."
-
-/datum/station_trait/blackout/on_round_start()
-	. = ..()
-	for(var/a in GLOB.apcs_list)
-		var/obj/machinery/power/apc/current_apc = a
-		if(prob(60))
-			current_apc.overload_lighting()
-
 /datum/station_trait/empty_maint
 	name = "Cleaned out maintenance"
 	trait_type = STATION_TRAIT_NEGATIVE
