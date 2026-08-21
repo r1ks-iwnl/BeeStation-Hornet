@@ -148,6 +148,57 @@
 
 	addtimer(CALLBACK(src, PROC_REF(stab_loop), source, stabs_remaining - 1), rand(CLICK_CD_MELEE, CLICK_CD_MELEE + 6))
 
+// Battle hallucination including various randomly picked sounds
+/datum/hallucination/battle/random
+	random_hallucination_weight = 3
+		// Sounds associated with a fight starting
+	var/list/start_sound = list('sound/effects/snap.ogg', 'sound/weapons/flash.ogg', 'sound/weapons/egloves.ogg')
+		// Someone blasting
+	var/list/attacker_sound = list('sound/weapons/shotgunshot.ogg', 'sound/weapons/revolver38shot.ogg', 'sound/weapons/revolver357shot.ogg', 'sound/weapons/rifleshot.ogg', 'sound/weapons/smgshot.ogg',
+								'sound/weapons/bladeslice.ogg', 'sound/weapons/blade1.ogg', 'sound/weapons/slice.ogg', 'sound/weapons/slash.ogg', 'sound/weapons/smash.ogg', 'sound/weapons/bite.ogg')
+	// The person getting blasted, declaration only, a scream sound gets added later
+	var/list/defender_sound = list('sound/weapons/parry.ogg', 'sound/weapons/cablecuff.ogg')
+	var/volume = 50
+
+/datum/hallucination/battle/random/start()
+	var/turf/source = random_far_turf()
+	hallucinator.playsound_local(source, pick(start_sound), volume, TRUE)
+	addtimer(CALLBACK(src, PROC_REF(sound_loop), source, rand(2, 4), pick(attacker_sound)), CLICK_CD_MELEE)
+	return TRUE
+
+/datum/hallucination/battle/random/proc/get_scream_sound()
+	var/datum/mind/screamer_mind = pick(get_crewmember_minds())
+	var/mob/living/carbon/human/screamer_mob = screamer_mind.current
+	var/scream = screamer_mob?.dna.species.get_scream_sound(screamer_mob)
+
+	if(!scream) // code above failed for whatever reason so we just use human screams
+		scream = pick(
+		'sound/voice/human/femalescream_1.ogg',
+		'sound/voice/human/femalescream_2.ogg',
+		'sound/voice/human/femalescream_3.ogg',
+		'sound/voice/human/femalescream_4.ogg',
+		'sound/voice/human/malescream_1.ogg',
+		'sound/voice/human/malescream_2.ogg',
+		'sound/voice/human/malescream_3.ogg',
+		'sound/voice/human/malescream_4.ogg',
+		'sound/voice/human/malescream_5.ogg')
+	return scream
+
+/datum/hallucination/battle/random/proc/sound_loop(turf/source, hits_remaing, attacker_sound)
+
+	if(hits_remaing)
+		hallucinator.playsound_local(source, attacker_sound, volume, TRUE)
+		--hits_remaing
+		addtimer(CALLBACK(src, PROC_REF(sound_loop), source, hits_remaing, attacker_sound), rand(CLICK_CD_MELEE - 4, CLICK_CD_MELEE + 5))
+		return
+
+	addtimer(CALLBACK(src, PROC_REF(finish), source), rand(CLICK_CD_MELEE + 10, CLICK_CD_MELEE + 15))
+
+/datum/hallucination/battle/random/proc/finish(turf/source, attacker_sound)
+	defender_sound += get_scream_sound()
+	hallucinator.playsound_local(source, pick(defender_sound), volume, TRUE)
+	qdel(src)
+
 /// A hallucination of a syndicate bomb ticking down.
 /datum/hallucination/battle/bomb
 

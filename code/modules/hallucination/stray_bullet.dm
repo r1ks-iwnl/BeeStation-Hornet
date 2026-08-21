@@ -6,8 +6,11 @@
 	var/list/turf/starting_locations = list()
 
 	var/used_view = hallucinator.client?.view || world.view
-	for(var/turf/open/open_out_of_view in view(getexpandedview(used_view, extra_x = 1, extra_y = 1), hallucinator) - view(used_view, hallucinator))
-		starting_locations += open_out_of_view
+	//this only used to shoot from left and bottom
+	for(var/turf/open/open_out_of_view in view(getexpandedview(used_view, extra_x = 2, extra_y = 2), hallucinator) - view(used_view, hallucinator))
+		if(clear_line_of_sight(open_out_of_view, hallucinator))
+			starting_locations += open_out_of_view
+
 	if(!length(starting_locations))
 		return FALSE
 
